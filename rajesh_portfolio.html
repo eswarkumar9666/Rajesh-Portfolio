@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pammi Rajesh Kumar — Civil Engineer & Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --pink: #ec4899;
+    --cyan: #06b6d4;
+    --amber: #f59e0b;
+    --bg: #080b14;
+    --bg2: #0d1120;
+    --card: #111827;
+    --card2: #1a2235;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .35;
+  }
+
+  /* ── CUSTOM SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(var(--indigo), var(--pink)); border-radius: 10px; }
+
+  /* ── CURSOR ── */
+  #cursor-dot {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--cyan); border-radius: 50%;
+    pointer-events: none; z-index: 99999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+    transition: width .15s, height .15s, background .15s;
+  }
+  #cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border: 2px solid rgba(6,182,212,.5);
+    border-radius: 50%; pointer-events: none; z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: all .12s ease-out;
+  }
+  body:hover #cursor-dot { }
+
+  /* ── CANVAS ── */
+  #particle-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── LOADING SCREEN ── */
+  #loader {
+    position: fixed; inset: 0; z-index: 100000;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity .6s ease, visibility .6s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-initials {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--indigo), var(--pink), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse-text 1.5s ease-in-out infinite;
+    letter-spacing: -2px;
+  }
+  @keyframes pulse-text {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .7; transform: scale(1.04); }
+  }
+  .loader-bar-wrap {
+    width: 200px; height: 3px;
+    background: rgba(255,255,255,.08);
+    border-radius: 10px; margin-top: 2rem; overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--indigo), var(--pink), var(--cyan), var(--amber));
+    background-size: 300% 100%;
+    border-radius: 10px;
+    animation: load-fill 2s ease forwards, gradient-shift 1s linear infinite;
+  }
+  @keyframes load-fill { to { width: 100%; } }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+  .loader-sub {
+    margin-top: .75rem; color: var(--muted);
+    font-size: .8rem; letter-spacing: 3px; text-transform: uppercase;
+    animation: fade-in-up 1s ease .5s both;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    backdrop-filter: blur(20px);
+    background: rgba(8,11,20,.6);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    transform: translateY(-100%);
+    animation: slide-down .7s cubic-bezier(0.22,1,0.36,1) 2.4s forwards;
+  }
+  @keyframes slide-down { to { transform: translateY(0); } }
+  .nav-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--cyan), var(--indigo));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: .9rem;
+    font-weight: 500; position: relative; padding-bottom: 2px;
+    transition: color .3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px;
+    background: linear-gradient(90deg, var(--cyan), var(--indigo));
+    transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--indigo), var(--pink));
+    color: white !important; padding: .4rem 1.2rem;
+    border-radius: 100px; font-weight: 600 !important;
+    transition: transform .2s, box-shadow .2s !important;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,70,229,.4); }
+  .nav-cta::after { display: none !important; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; }
+  .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 8rem 2rem 4rem;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center; width: 100%;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(6,182,212,.1); border: 1px solid rgba(6,182,212,.25);
+    color: var(--cyan); padding: .35rem 1rem; border-radius: 100px;
+    font-size: .78rem; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 1.5rem;
+    animation: fade-in-up .8s ease 2.6s both;
+  }
+  .hero-tag .dot {
+    width: 8px; height: 8px; background: var(--cyan);
+    border-radius: 50%; animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 800; line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, var(--indigo) 40%, var(--pink) 70%, var(--cyan) 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite, fade-in-up .8s ease 2.7s both;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+  .hero-title {
+    font-size: 1.1rem; color: var(--muted); margin-top: .75rem;
+    font-weight: 400; animation: fade-in-up .8s ease 2.8s both;
+  }
+  .hero-title span { color: var(--amber); font-weight: 600; }
+  .hero-desc {
+    color: var(--muted); margin-top: 1.25rem; line-height: 1.7; max-width: 480px;
+    animation: fade-in-up .8s ease 2.9s both;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; margin-top: 2rem;
+    animation: fade-in-up .8s ease 3s both;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--indigo), var(--pink));
+    color: white; padding: .75rem 1.75rem; border-radius: 100px;
+    font-weight: 600; text-decoration: none; font-size: .95rem;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 20px rgba(79,70,229,.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(79,70,229,.5); }
+  .btn-outline {
+    border: 1px solid var(--border); color: var(--text);
+    padding: .75rem 1.75rem; border-radius: 100px;
+    font-weight: 600; text-decoration: none; font-size: .95rem;
+    transition: border-color .2s, background .2s;
+  }
+  .btn-outline:hover { border-color: var(--cyan); background: rgba(6,182,212,.08); }
+
+  /* 3D card */
+  .hero-card-wrap {
+    display: flex; justify-content: center; align-items: center;
+    animation: fade-in-up .8s ease 3.1s both;
+  }
+  .card-3d {
+    position: relative; width: 300px; height: 380px;
+    transform-style: preserve-3d;
+    animation: float3d 6s ease-in-out infinite;
+  }
+  @keyframes float3d {
+    0%,100% { transform: rotateX(5deg) rotateY(-8deg) translateY(0); }
+    33% { transform: rotateX(-5deg) rotateY(8deg) translateY(-12px); }
+    66% { transform: rotateX(8deg) rotateY(3deg) translateY(-6px); }
+  }
+  .card-3d-inner {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 24px; padding: 2rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1rem; backdrop-filter: blur(10px);
+    box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+    position: relative; overflow: hidden;
+  }
+  .card-3d-inner::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(79,70,229,.12) 0%, rgba(236,72,153,.08) 100%);
+    border-radius: inherit;
+  }
+  .card-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--indigo), var(--pink));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: white;
+    position: relative; z-index: 1;
+  }
+  .card-avatar-img {
+    width: 80px; height: 80px; border-radius: 50%;
+    object-fit: cover; border: 3px solid rgba(255,255,255,.15);
+    position: relative; z-index: 1;
+  }
+  .spin-ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
+    width: 110px; height: 110px; border-radius: 50%;
+    border: 2px dashed rgba(6,182,212,.4);
+    animation: spin-slow 8s linear infinite;
+  }
+  @keyframes spin-slow { to { transform: translate(-50%, -55%) rotate(360deg); } }
+  .orb-glow {
+    position: absolute; width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,70,229,.25) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -60%);
+    animation: orb-pulse 3s ease-in-out infinite;
+  }
+  @keyframes orb-pulse { 0%,100% { transform: translate(-50%, -60%) scale(1); opacity: .7; } 50% { transform: translate(-50%, -60%) scale(1.2); opacity: 1; } }
+  .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; z-index: 1; text-align: center; }
+  .card-role { color: var(--cyan); font-size: .78rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; z-index: 1; }
+  .card-stats {
+    display: flex; gap: 1rem; margin-top: .5rem; z-index: 1;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; line-height: 1; }
+  .stat-label { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-num.c1 { color: var(--cyan); }
+  .stat-num.c2 { color: var(--pink); }
+  .stat-num.c3 { color: var(--amber); }
+
+  /* ── SECTION BASE ── */
+  .section-wrap {
+    max-width: 1200px; margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+  .section-header { margin-bottom: 3.5rem; }
+  .section-tag {
+    display: inline-block; color: var(--pink);
+    font-size: .75rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: .75rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; line-height: 1.1;
+  }
+  .section-title span {
+    background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--bg2); }
+  .skills-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2rem; margin-bottom: 3rem;
+  }
+  .skill-item { margin-bottom: 1.5rem; }
+  .skill-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: .5rem;
+  }
+  .skill-name { font-weight: 600; font-size: .95rem; }
+  .skill-pct { color: var(--cyan); font-size: .85rem; font-weight: 700; }
+  .skill-bar-bg {
+    height: 6px; background: rgba(255,255,255,.06);
+    border-radius: 100px; overflow: visible; position: relative;
+  }
+  .skill-bar {
+    height: 100%; border-radius: 100px; width: 0;
+    transition: width 1.2s cubic-bezier(0.22,1,0.36,1);
+    position: relative; overflow: hidden;
+  }
+  .skill-bar::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.5) 50%, transparent 100%);
+    transform: translateX(-100%);
+    animation: shimmer-bar 1.5s ease .5s;
+  }
+  @keyframes shimmer-bar {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  .s1 { background: linear-gradient(90deg, var(--indigo), var(--cyan)); }
+  .s2 { background: linear-gradient(90deg, var(--pink), var(--amber)); }
+  .s3 { background: linear-gradient(90deg, var(--cyan), var(--indigo)); }
+  .s4 { background: linear-gradient(90deg, var(--amber), var(--pink)); }
+  .s5 { background: linear-gradient(90deg, var(--indigo), var(--pink)); }
+
+  .chips-wrap { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+  .chip {
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    color: var(--muted); padding: .4rem 1rem; border-radius: 100px;
+    font-size: .8rem; font-weight: 500;
+    transition: transform .3s, color .3s, border-color .3s, background .3s;
+    cursor: default;
+  }
+  .chip:hover {
+    transform: translateY(-4px);
+    color: var(--text); border-color: var(--cyan);
+    background: rgba(6,182,212,.1);
+  }
+
+  /* ── EXPERIENCE / INTERNSHIPS ── */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, var(--indigo), var(--pink), var(--cyan));
+    animation: timeline-grow 1.5s ease forwards;
+  }
+  @keyframes timeline-grow { from { transform-origin: top; transform: scaleY(0); } to { transform: scaleY(1); } }
+  .timeline-item {
+    position: relative; margin-bottom: 2.5rem;
+    padding: 1.75rem; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px;
+    transition: transform .3s, box-shadow .3s;
+    opacity: 0;
+  }
+  .timeline-item.visible { opacity: 1; animation: slide-right .6s ease forwards; }
+  @keyframes slide-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+  .timeline-item:hover {
+    transform: translateX(8px);
+    box-shadow: -4px 0 30px rgba(79,70,229,.2);
+  }
+  .timeline-dot {
+    position: absolute; left: -2.6rem; top: 1.8rem;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--indigo), var(--cyan));
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 10px rgba(79,70,229,.6);
+  }
+  .exp-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .exp-meta {
+    display: flex; gap: 1rem; align-items: center; margin: .4rem 0 .75rem;
+    flex-wrap: wrap;
+  }
+  .exp-company { color: var(--cyan); font-weight: 600; font-size: .9rem; }
+  .exp-date { color: var(--muted); font-size: .8rem; }
+  .exp-desc { color: var(--muted); line-height: 1.7; font-size: .9rem; }
+  .badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+  .badge {
+    padding: .25rem .75rem; border-radius: 100px; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .b-cyan { background: rgba(6,182,212,.15); color: var(--cyan); border: 1px solid rgba(6,182,212,.3); }
+  .b-pink { background: rgba(236,72,153,.15); color: var(--pink); border: 1px solid rgba(236,72,153,.3); }
+  .b-amber { background: rgba(245,158,11,.15); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
+  .b-indigo { background: rgba(79,70,229,.15); color: #818cf8; border: 1px solid rgba(79,70,229,.3); }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--bg2); }
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 1.75rem; position: relative;
+    overflow: hidden; transition: transform .3s, box-shadow .3s;
+    opacity: 0;
+  }
+  .project-card.visible { animation: fade-up .6s ease forwards; }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: -100%; right: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--indigo), var(--pink), var(--cyan));
+    transition: left .4s ease, right .4s ease;
+  }
+  .project-card:hover::before { left: 0; right: 0; }
+  .project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.4);
+  }
+  .project-emoji { font-size: 2.5rem; margin-bottom: 1rem; }
+  .project-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: .5rem; }
+  .project-desc { color: var(--muted); font-size: .85rem; line-height: 1.6; margin-bottom: 1rem; }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .tech-tag {
+    background: rgba(79,70,229,.12); color: #a5b4fc;
+    border: 1px solid rgba(79,70,229,.2); padding: .2rem .6rem;
+    border-radius: 100px; font-size: .72rem; font-weight: 600;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+  .edu-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 1.75rem; position: relative; overflow: hidden;
+    transition: transform .3s;
+  }
+  .edu-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--indigo), var(--cyan));
+  }
+  .edu-card:hover { transform: translateY(-4px); }
+  .edu-year { color: var(--cyan); font-size: .75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
+  .edu-degree { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: .25rem; }
+  .edu-inst { color: var(--muted); font-size: .85rem; margin-bottom: .75rem; }
+  .edu-score { display: inline-block; padding: .3rem .85rem; border-radius: 100px; font-size: .8rem; font-weight: 700; }
+  .score-good { background: rgba(6,182,212,.12); color: var(--cyan); border: 1px solid rgba(6,182,212,.25); }
+
+  /* ── LANGUAGES ── */
+  .lang-wrap { display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .lang-badge {
+    padding: .6rem 1.5rem; border-radius: 100px; font-weight: 700; font-size: .85rem;
+    animation: float-badge 3s ease-in-out infinite;
+    cursor: default;
+  }
+  .lang-badge:nth-child(1) { background: rgba(79,70,229,.15); border: 1px solid rgba(79,70,229,.35); color: #a5b4fc; animation-delay: 0s; }
+  .lang-badge:nth-child(2) { background: rgba(236,72,153,.15); border: 1px solid rgba(236,72,153,.35); color: #f9a8d4; animation-delay: .4s; }
+  .lang-badge:nth-child(3) { background: rgba(245,158,11,.15); border: 1px solid rgba(245,158,11,.35); color: #fcd34d; animation-delay: .8s; }
+  @keyframes float-badge {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-section { overflow: hidden; padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 1rem 0; }
+  .marquee-track {
+    display: flex; gap: 3rem; animation: marquee 18s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .marquee-item {
+    color: var(--muted); font-size: .85rem; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0;
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .marquee-item::before { content: '◆'; color: var(--pink); font-size: .5rem; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--bg2); }
+  .contact-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .contact-cards { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: transform .3s, box-shadow .3s;
+    text-decoration: none; color: inherit;
+  }
+  .contact-card:hover {
+    transform: translateX(8px);
+    box-shadow: 4px 0 20px rgba(6,182,212,.15);
+    border-color: rgba(6,182,212,.3);
+  }
+  .contact-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .ci-pink { background: rgba(236,72,153,.15); }
+  .ci-cyan { background: rgba(6,182,212,.15); }
+  .ci-amber { background: rgba(245,158,11,.15); }
+  .ci-indigo { background: rgba(79,70,229,.15); }
+  .contact-label { font-size: .72rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 600; }
+  .contact-value { font-weight: 600; font-size: .95rem; margin-top: .1rem; }
+
+  /* pulsing avatar */
+  .contact-avatar-wrap {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .ripple-ring {
+    position: absolute; border-radius: 50%;
+    border: 2px solid rgba(79,70,229,.4);
+    animation: ripple-expand 2.5s ease-out infinite;
+  }
+  .ripple-ring:nth-child(1) { width: 180px; height: 180px; animation-delay: 0s; }
+  .ripple-ring:nth-child(2) { width: 240px; height: 240px; animation-delay: .8s; }
+  .ripple-ring:nth-child(3) { width: 300px; height: 300px; animation-delay: 1.6s; }
+  @keyframes ripple-expand {
+    0% { transform: scale(.8); opacity: .8; }
+    100% { transform: scale(1.1); opacity: 0; }
+  }
+  .avatar-main {
+    width: 130px; height: 130px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--indigo), var(--pink));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: white;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 50px rgba(79,70,229,.4);
+    overflow: hidden;
+  }
+  .avatar-main img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2.5rem 2rem;
+    color: var(--muted); font-size: .85rem;
+    border-top: 1px solid var(--border); position: relative; z-index: 1;
+  }
+  footer span { color: var(--pink); }
+
+  /* ── SCROLL REVEAL BASE ── */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PORTFOLIO IMAGES SECTION ── */
+  .portfolio-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1rem; margin-top: 1rem;
+  }
+  .portfolio-img-wrap {
+    border-radius: 16px; overflow: hidden; position: relative;
+    aspect-ratio: 4/3; cursor: none;
+    border: 1px solid var(--border);
+    transition: transform .3s, box-shadow .3s;
+  }
+  .portfolio-img-wrap:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 50px rgba(0,0,0,.5);
+  }
+  .portfolio-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .5s;
+  }
+  .portfolio-img-wrap:hover img { transform: scale(1.08); }
+  .portfolio-img-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: .75rem 1rem; background: linear-gradient(transparent, rgba(0,0,0,.8));
+    font-size: .78rem; font-weight: 600; color: var(--text); opacity: 0;
+    transition: opacity .3s;
+  }
+  .portfolio-img-wrap:hover .portfolio-img-label { opacity: 1; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-card-wrap { display: none; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .edu-grid { grid-template-columns: 1fr; }
+    .contact-inner { grid-template-columns: 1fr; }
+    .contact-avatar-wrap { display: none; }
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .section-wrap { padding: 4rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-initials">PRK</div>
+  <div class="loader-sub">Loading Portfolio</div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Rajesh Kumar</a>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag"><span class="dot"></span>Available for Opportunities</div>
+      <h1 class="hero-name">Pammi<br>Rajesh Kumar</h1>
+      <p class="hero-title">Civil Engineer & <span>Interior Design Visualizer</span></p>
+      <p class="hero-desc">B.Tech graduate in Civil Engineering with expertise in 3D design, structural analysis, and architectural visualization. Proficient in SketchUp, AutoCAD, Revit, STAAD Pro, and ETABS.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+    <div class="hero-card-wrap">
+      <div class="card-3d">
+        <div class="orb-glow"></div>
+        <div class="spin-ring"></div>
+        <div class="card-3d-inner">
+          <div class="card-avatar">PRK</div>
+          <div class="card-name">Pammi Rajesh Kumar</div>
+          <div class="card-role">Civil Engineer · Designer</div>
+          <div class="card-stats">
+            <div class="stat"><div class="stat-num c1">7.2</div><div class="stat-label">CGPA</div></div>
+            <div class="stat"><div class="stat-num c2">3+</div><div class="stat-label">Certs</div></div>
+            <div class="stat"><div class="stat-num c3">5+</div><div class="stat-label">Projects</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">SketchUp</span>
+    <span class="marquee-item">AutoCAD</span>
+    <span class="marquee-item">Revit Architecture</span>
+    <span class="marquee-item">STAAD Pro</span>
+    <span class="marquee-item">ETABS</span>
+    <span class="marquee-item">BIM</span>
+    <span class="marquee-item">Structural Design</span>
+    <span class="marquee-item">Interior Visualization</span>
+    <span class="marquee-item">APSSDC</span>
+    <span class="marquee-item">SKILLDZIRE</span>
+    <span class="marquee-item">CADDESK</span>
+    <span class="marquee-item">SketchUp</span>
+    <span class="marquee-item">AutoCAD</span>
+    <span class="marquee-item">Revit Architecture</span>
+    <span class="marquee-item">STAAD Pro</span>
+    <span class="marquee-item">ETABS</span>
+    <span class="marquee-item">BIM</span>
+    <span class="marquee-item">Structural Design</span>
+    <span class="marquee-item">Interior Visualization</span>
+    <span class="marquee-item">APSSDC</span>
+    <span class="marquee-item">SKILLDZIRE</span>
+    <span class="marquee-item">CADDESK</span>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">Expertise</div>
+      <h2 class="section-title">Technical <span>Skills</span></h2>
+    </div>
+    <div class="skills-grid">
+      <div>
+        <div class="skill-item reveal">
+          <div class="skill-label"><span class="skill-name">SketchUp</span><span class="skill-pct">90%</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar s1" data-width="90"></div></div>
+        </div>
+        <div class="skill-item reveal">
+          <div class="skill-label"><span class="skill-name">AutoCAD</span><span class="skill-pct">85%</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar s2" data-width="85"></div></div>
+        </div>
+        <div class="skill-item reveal">
+          <div class="skill-label"><span class="skill-name">Revit Architecture</span><span class="skill-pct">75%</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar s3" data-width="75"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="skill-item reveal">
+          <div class="skill-label"><span class="skill-name">STAAD Pro</span><span class="skill-pct">70%</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar s4" data-width="70"></div></div>
+        </div>
+        <div class="skill-item reveal">
+          <div class="skill-label"><span class="skill-name">ETABS</span><span class="skill-pct">65%</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar s5" data-width="65"></div></div>
+        </div>
+        <div class="skill-item reveal">
+          <div class="skill-label"><span class="skill-name">Structural Analysis</span><span class="skill-pct">80%</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar s1" data-width="80"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="section-tag" style="margin-bottom:.75rem;">Technologies & Tools</div>
+      <div class="chips-wrap">
+        <span class="chip">SketchUp</span>
+        <span class="chip">AutoCAD</span>
+        <span class="chip">Revit</span>
+        <span class="chip">STAAD Pro</span>
+        <span class="chip">ETABS</span>
+        <span class="chip">BIM</span>
+        <span class="chip">3D Modeling</span>
+        <span class="chip">Interior Design</span>
+        <span class="chip">Structural Analysis</span>
+        <span class="chip">CAD to BIM</span>
+        <span class="chip">Hydraulic Lime</span>
+        <span class="chip">Construction Materials</span>
+        <span class="chip">MS Office</span>
+        <span class="chip">Building Design</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">Training & Certifications</div>
+      <h2 class="section-title">Internship <span>Experience</span></h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="exp-title">Revit Architecture Internship</div>
+        <div class="exp-meta">
+          <span class="exp-company">APSSDC</span>
+          <span class="exp-date">2022–2025</span>
+        </div>
+        <p class="exp-desc">Completed intensive training in Revit Architecture covering CAD to BIM workflows, data management, custom tools development, automating repetitive tasks, and advanced architectural design techniques. Achieved certification of completion.</p>
+        <div class="badges">
+          <span class="badge b-cyan">BIM</span>
+          <span class="badge b-indigo">Revit</span>
+          <span class="badge b-pink">CAD to BIM</span>
+          <span class="badge b-amber">Data Management</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="exp-title">STAAD Pro Structural Analysis</div>
+        <div class="exp-meta">
+          <span class="exp-company">SKILLDZIRE</span>
+          <span class="exp-date">Training</span>
+        </div>
+        <p class="exp-desc">Hands-on training in STAAD Pro covering structural modeling basics, applying loads and supports, performing structural analysis, and designing structural elements for real-world civil engineering applications.</p>
+        <div class="badges">
+          <span class="badge b-cyan">STAAD Pro</span>
+          <span class="badge b-indigo">Structural Modeling</span>
+          <span class="badge b-pink">Load Analysis</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="exp-title">ETABS Software Training</div>
+        <div class="exp-meta">
+          <span class="exp-company">SKILLDZIRE</span>
+          <span class="exp-date">Training</span>
+        </div>
+        <p class="exp-desc">Advanced training in ETABS software for engineering design and analysis of building systems. Gained expertise in structural system modeling, lateral load analysis, and reinforced concrete design.</p>
+        <div class="badges">
+          <span class="badge b-amber">ETABS</span>
+          <span class="badge b-cyan">Structural Design</span>
+          <span class="badge b-indigo">Building Systems</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="exp-title">SketchUp & AutoCAD Certification</div>
+        <div class="exp-meta">
+          <span class="exp-company">CADDESK</span>
+          <span class="exp-date">Certification</span>
+        </div>
+        <p class="exp-desc">Comprehensive certification program covering interior designing, 3D model designing, architectural plan creation, and advanced SketchUp and AutoCAD techniques for professional civil engineering practice.</p>
+        <div class="badges">
+          <span class="badge b-pink">SketchUp</span>
+          <span class="badge b-cyan">AutoCAD</span>
+          <span class="badge b-amber">Interior Design</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">My Work</div>
+      <h2 class="section-title">Featured <span>Projects</span></h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-emoji">🧪</div>
+        <div class="project-name">Natural Hydraulic Lime Mortars with Egg Albumen</div>
+        <p class="project-desc">Experimental investigation on natural hydraulic lime mortars treated with egg albumen as a natural polymer. Research focused on enhancing performance and sustainability of traditional building materials for restoration and eco-friendly construction.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">Material Science</span>
+          <span class="tech-tag">Lime Mortars</span>
+          <span class="tech-tag">Sustainability</span>
+          <span class="tech-tag">Mechanical Testing</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🏡</div>
+        <div class="project-name">Residential Interior 3D Visualization</div>
+        <p class="project-desc">Complete 3D visualization of residential interiors including living rooms, bedrooms, kitchen, and entertainment units. Created photorealistic renders using SketchUp with detailed lighting, material textures and furniture layouts.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">SketchUp</span>
+          <span class="tech-tag">3D Rendering</span>
+          <span class="tech-tag">Interior Design</span>
+          <span class="tech-tag">Lighting</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🏗️</div>
+        <div class="project-name">Structural Analysis – STAAD Pro</div>
+        <p class="project-desc">Comprehensive structural modeling and analysis project using STAAD Pro. Designed structural elements, applied load combinations and supports, and performed full structural analysis for a multi-storey building system.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">STAAD Pro</span>
+          <span class="tech-tag">Structural Analysis</span>
+          <span class="tech-tag">Load Combinations</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🏢</div>
+        <div class="project-name">BIM Model – Revit Architecture</div>
+        <p class="project-desc">Created a complete Building Information Model using Revit Architecture. Covered CAD to BIM migration, data management, custom parameter development, and automated repetitive documentation workflows.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">Revit</span>
+          <span class="tech-tag">BIM</span>
+          <span class="tech-tag">CAD to BIM</span>
+          <span class="tech-tag">APSSDC</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">📐</div>
+        <div class="project-name">Architectural Plans – AutoCAD</div>
+        <p class="project-desc">Developed detailed architectural and structural drawings using AutoCAD including floor plans, elevations, sections, and construction details for residential and commercial projects during CADDESK training.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">AutoCAD</span>
+          <span class="tech-tag">Drafting</span>
+          <span class="tech-tag">Floor Plans</span>
+          <span class="tech-tag">CADDESK</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-emoji">🔩</div>
+        <div class="project-name">Building Analysis – ETABS</div>
+        <p class="project-desc">Performed advanced structural building analysis using ETABS software. Modeled lateral load resisting systems, reinforced concrete frames, and analyzed dynamic behavior under various load conditions.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">ETABS</span>
+          <span class="tech-tag">Lateral Loads</span>
+          <span class="tech-tag">RC Design</span>
+          <span class="tech-tag">SKILLDZIRE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO IMAGES -->
+<section id="portfolio">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">Design Work</div>
+      <h2 class="section-title">Interior Design <span>Portfolio</span></h2>
+    </div>
+    <div class="portfolio-grid">
+      <div class="portfolio-img-wrap reveal">
+        <img src="/mnt/user-data/uploads/1776611519458_IMG_7610_JPG.jpeg" alt="Living Room Design" onerror="this.parentNode.style.background='#1a2235'; this.style.display='none';">
+        <div class="portfolio-img-label">TV Unit & Living Room</div>
+      </div>
+      <div class="portfolio-img-wrap reveal">
+        <img src="/mnt/user-data/uploads/1776611524272_IMG_7609_JPG.jpeg" alt="Kitchen Design" onerror="this.parentNode.style.background='#1a2235'; this.style.display='none';">
+        <div class="portfolio-img-label">Modular Kitchen Design</div>
+      </div>
+      <div class="portfolio-img-wrap reveal">
+        <img src="/mnt/user-data/uploads/1776611532612_IMG_7606_JPG.jpeg" alt="Bedroom Design" onerror="this.parentNode.style.background='#1a2235'; this.style.display='none';">
+        <div class="portfolio-img-label">Modern Bedroom</div>
+      </div>
+      <div class="portfolio-img-wrap reveal">
+        <img src="/mnt/user-data/uploads/1776611538971_IMG_7607_JPG.jpeg" alt="Living Room" onerror="this.parentNode.style.background='#1a2235'; this.style.display='none';">
+        <div class="portfolio-img-label">Luxury Living Room</div>
+      </div>
+      <div class="portfolio-img-wrap reveal">
+        <img src="/mnt/user-data/uploads/1776611569419_IMG_7611.PNG" alt="Master Bedroom" onerror="this.parentNode.style.background='#1a2235'; this.style.display='none';">
+        <div class="portfolio-img-label">Master Bedroom Suite</div>
+      </div>
+      <div class="portfolio-img-wrap reveal" style="background:linear-gradient(135deg,#111827,#1a2235);display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;padding:2rem;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🏛️</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#94a3b8;">More projects coming soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">Academic Background</div>
+      <h2 class="section-title">Education & <span>Qualifications</span></h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="edu-year">2022 – 2025</div>
+        <div class="edu-degree">B.Tech – Civil Engineering</div>
+        <div class="edu-inst">Aditya College of Engineering and Technology</div>
+        <span class="edu-score score-good">CGPA: 7.2</span>
+      </div>
+      <div class="edu-card reveal">
+        <div class="edu-year">2018 – 2021</div>
+        <div class="edu-degree">Diploma – Civil Engineering</div>
+        <div class="edu-inst">Nuzuvidu Polytechnic College</div>
+        <span class="edu-score score-good">71%</span>
+      </div>
+      <div class="edu-card reveal">
+        <div class="edu-year">2017 – 2018</div>
+        <div class="edu-degree">SSC (10th Standard)</div>
+        <div class="edu-inst">Z.P.H School, Gangalakurru</div>
+        <span class="edu-score score-good">GPA: 8.5</span>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:3rem;">
+      <div class="section-tag" style="margin-bottom:.75rem;">Languages</div>
+      <div class="lang-wrap">
+        <span class="lang-badge">Telugu — Native</span>
+        <span class="lang-badge">English — Proficient</span>
+        <span class="lang-badge">Hindi — Conversational</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">Get in Touch</div>
+      <h2 class="section-title">Let's <span>Connect</span></h2>
+    </div>
+    <div class="contact-inner">
+      <div class="contact-cards">
+        <a href="mailto:rajeshstar414@gmail.com" class="contact-card reveal-left">
+          <div class="contact-icon ci-pink">📧</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value">rajeshstar414@gmail.com</div>
+          </div>
+        </a>
+        <a href="tel:7032092037" class="contact-card reveal-left">
+          <div class="contact-icon ci-cyan">📱</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value">+91 7032092037</div>
+          </div>
+        </a>
+        <div class="contact-card reveal-left">
+          <div class="contact-icon ci-amber">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">8-28, Rayavaram, Konaseema Dist – 533346</div>
+          </div>
+        </div>
+        <div class="contact-card reveal-left">
+          <div class="contact-icon ci-indigo">✅</div>
+          <div>
+            <div class="contact-label">Availability</div>
+            <div class="contact-value" style="color:var(--cyan)">Open to Opportunities</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-avatar-wrap reveal-right">
+        <div class="ripple-ring"></div>
+        <div class="ripple-ring"></div>
+        <div class="ripple-ring"></div>
+        <div class="avatar-main">PRK</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Designed & Built by <span>Pammi Rajesh Kumar</span> · Civil Engineer & 3D Designer · © 2025</p>
+</footer>
+
+<script>
+/* ── LOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 2200);
+});
+
+/* ── CURSOR ── */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function animCursor() {
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  rx += (mx - rx) * .12; ry += (my - ry) * .12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('a, button, .chip, .project-card, .contact-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    dot.style.width = '14px'; dot.style.height = '14px';
+    ring.style.width = '52px'; ring.style.height = '52px';
+    ring.style.borderColor = 'rgba(236,72,153,.6)';
+  });
+  el.addEventListener('mouseleave', () => {
+    dot.style.width = '8px'; dot.style.height = '8px';
+    ring.style.width = '36px'; ring.style.height = '36px';
+    ring.style.borderColor = 'rgba(6,182,212,.5)';
+  });
+});
+
+/* ── PARTICLES ── */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COLORS = ['#4f46e5','#ec4899','#06b6d4','#f59e0b'];
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W; this.y = Math.random() * H;
+    this.vx = (Math.random()-.5)*.4; this.vy = (Math.random()-.5)*.4;
+    this.r = Math.random()*2+1;
+    this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.alpha = Math.random()*.5+.15;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  }
+  draw() {
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+    ctx.fillStyle = this.color; ctx.globalAlpha = this.alpha; ctx.fill(); ctx.globalAlpha = 1;
+  }
+}
+for (let i = 0; i < 90; i++) particles.push(new Particle());
+function drawLines() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 130) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = particles[i].color;
+        ctx.globalAlpha = (1-d/130) * .15;
+        ctx.lineWidth = .6;
+        ctx.stroke(); ctx.globalAlpha = 1;
+      }
+    }
+  }
+}
+function animParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  drawLines();
+  requestAnimationFrame(animParticles);
+}
+animParticles();
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .timeline-item, .project-card');
+const skillBars = document.querySelectorAll('.skill-bar');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => observer.observe(el));
+
+/* ── SKILL BARS ── */
+const skillObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const bar = entry.target;
+      const w = bar.getAttribute('data-width');
+      setTimeout(() => { bar.style.width = w + '%'; }, 200);
+      skillObserver.unobserve(bar);
+    }
+  });
+}, { threshold: 0.5 });
+skillBars.forEach(b => skillObserver.observe(b));
+
+/* ── HAMBURGER ── */
+function toggleMenu() {
+  const links = document.querySelector('.nav-links');
+  if (links.style.display === 'flex') {
+    links.style.display = 'none';
+  } else {
+    links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:rgba(8,11,20,.97);padding:1.5rem 2rem;gap:1.5rem;border-bottom:1px solid rgba(255,255,255,.07);backdrop-filter:blur(20px);';
+  }
+}
+</script>
+</body>
+</html>
